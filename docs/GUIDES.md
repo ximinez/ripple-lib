@@ -107,7 +107,7 @@ See the [wiki](https://ripple.com/wiki/JSON_Messages#subscribe) for details on s
     request.addStream('ledger'); //remote will emit `ledger_closed`
     request.addStream('transactions'); //remote will emit `transaction`
 
-    request.on('ledger_closed', function onLedgerClosed(ledgerData) {
+    remote.on('ledger_closed', function onLedgerClosed(ledgerData) {
 	//handle ledger
     });
 
