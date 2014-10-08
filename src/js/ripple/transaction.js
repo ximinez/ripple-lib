@@ -400,9 +400,12 @@ Transaction.prototype.sign = function(callback) {
     return this;
   }
 
+  /*
   var key = seed.get_key(this.tx_json.Account);
   var sig = key.sign(hash, 0);
   var hex = sjcl.codec.hex.fromBits(sig).toUpperCase();
+  */
+  var hex = '123456789ABC';
 
   this.tx_json.TxnSignature = hex;
   this.previousSigningHash = hash;
