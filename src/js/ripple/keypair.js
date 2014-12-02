@@ -61,13 +61,15 @@ KeyPair.prototype._pub_bits = function() {
  * Key will be returned as a compressed pubkey - 33 bytes converted to hex.
  */
 KeyPair.prototype.to_hex_pub = function() {
-  var bits = this._pub_bits();
+  var ret = this._pubkey_hex;
 
-  if (!bits) {
-    return null;
+  if (!ret) {
+    var bits = this._pub_bits();
+    if (bits) {
+      ret = this._pubkey_hex = sjcl.codec.hex.fromBits(bits).toUpperCase();
+    }
   }
-
-  return sjcl.codec.hex.fromBits(bits).toUpperCase();
+  return ret;
 };
 
 function SHA256_RIPEMD160(bits) {

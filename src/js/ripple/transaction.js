@@ -54,6 +54,8 @@ var SerializedObject = require('./serializedobject').SerializedObject;
 var RippleError      = require('./rippleerror').RippleError;
 var hashprefixes     = require('./hashprefixes');
 var config           = require('./config');
+var keycache         = require('./keycache');
+
 
 function Transaction(remote) {
   EventEmitter.call(this);
@@ -324,8 +326,8 @@ Transaction.prototype.complete = function() {
 
   if (typeof this.tx_json.SigningPubKey === 'undefined') {
     try {
-      var seed = Seed.from_json(this._secret);
-      var key  = seed.get_key(this.tx_json.Account);
+      // var seed = Seed.from_json(this._secret);
+      var key  =  keycache.get(this._secret);  //  seed.get_key(this.tx_json.Account);
       this.tx_json.SigningPubKey = key.to_hex_pub();
     } catch(e) {
       this.emit('error', new RippleError('tejSecretInvalid', 'Invalid secret'));
@@ -386,7 +388,7 @@ Transaction.prototype.hash = function(prefix, as_uint256) {
 
 Transaction.prototype.sign = function(callback) {
   var callback = typeof callback === 'function' ? callback : function(){};
-  var seed = Seed.from_json(this._secret);
+  // var seed = Seed.from_json(this._secret);
 
   var prev_sig = this.tx_json.TxnSignature;
   delete this.tx_json.TxnSignature;
@@ -401,9 +403,10 @@ Transaction.prototype.sign = function(callback) {
   }
 
   /*
-  var key = seed.get_key(this.tx_json.Account);
-  var sig = key.sign(hash, 0);
-  var hex = sjcl.codec.hex.fromBits(sig).toUpperCase();
+  // var key = seed.get_key(this.tx_json.Account);
+  var key = keycache.get(this._secret);
+  var hex = key.signHex(hash);
+  // var hex = sjcl.codec.hex.fromBits(sig).toUpperCase();
   */
   var hex = '123456789ABC';
 
